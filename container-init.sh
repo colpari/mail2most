@@ -27,7 +27,7 @@ do
 	fi
 done
 
-if ! test -s
+if ! test -s "$M2M_CONFFILE"
 then
 	echo "[config] no configuration(s) found" 1>&2
 	exit 1
