@@ -304,10 +304,10 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 				attachments = append(attachments, attachment)
 			}
 		}
-		if len(html) > 0 {
-			body = html
-		} else if len(text) > 0 {
+		if len(text) > 0 {
 			body = text
+		} else if len(html) > 0 {
+			body = html
 		} else {
 			body = ""
 		}
