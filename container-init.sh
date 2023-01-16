@@ -18,7 +18,7 @@ cat "$M2M_CONF_PREAMBLE" > "$M2M_CONFFILE"
 
 echo "[config] preamble is '$M2M_CONF_PREAMBLE'"
 
-for f in /mail2most/conf.d/*
+for f in /mail2most/conf.d/*.toml
 do
 	if test -f "$f"
 	then

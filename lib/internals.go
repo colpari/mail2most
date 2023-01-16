@@ -236,10 +236,10 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 
 				html += string(b)
 
-				// Parse plaintext e-mails
+			// Parse plaintext e-mails
 			} else if strings.HasPrefix(p.Header.Get("Content-Type"), "text/plain") {
 				// only parse if no html is found
-				if len(html) < 1 {
+				//if len(html) < 1 {
 					b, err := ioutil.ReadAll(p.Body)
 					if err != nil {
 						m.Error("Read Error", map[string]interface{}{"error": err, "function": "ioutil.ReadAll", "stage": "parse plain text"})
@@ -255,7 +255,7 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 						}
 						text += string(b)
 					}
-				}
+				//}
 
 				// Parse images
 			} else if strings.HasPrefix(p.Header.Get("Content-Type"), "image/") {
