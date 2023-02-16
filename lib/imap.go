@@ -170,7 +170,7 @@ func (m Mail2Most) GetMail(profile int) ([]Mail, error) {
 				continue
 			}
 
-			body, attachments, err := m.processReader(mr, profile)
+			body, attachments, wasHTML, err := m.processReader(mr, profile)
 			if err != nil {
 				m.Error("Read Processing Error", map[string]interface{}{"Error": err})
 				return []Mail{}, err
@@ -192,6 +192,7 @@ func (m Mail2Most) GetMail(profile int) ([]Mail, error) {
 				To:          msg.Envelope.To,
 				Subject:     msg.Envelope.Subject,
 				Body:        strings.TrimSuffix(body, "\n"),
+				WasHTML:     wasHTML,
 				Date:        msg.Envelope.Date,
 				Attachments: attachments,
 			}

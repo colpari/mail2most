@@ -184,12 +184,20 @@ func (m Mail2Most) parseText(b []byte) ([]byte, error) {
 	b = fw.ReplaceAll(b, []byte(""))
 
 	// Eliminate extra whitespace.
-	ws := regexp.MustCompile(`(?s)\s{2+}`)
-	b = ws.ReplaceAll(b, []byte(" "))
+	// ws := regexp.MustCompile(`(?s)\s{2+}`)
+	// b = ws.ReplaceAll(b, []byte(" "))
 
 	// Remove reply headers.
-	re := regexp.MustCompile(`(.+): ((.|\r\n\s)+)\r\n`)
-	b = re.ReplaceAll(b, []byte(""))
+	// re := regexp.MustCompile(`(.+): ((.|\r\n\s)+)\r\n`)  <- This is broken and sometimes removes much more than the intended "reply headers"
+	// b = re.ReplaceAll(b, []byte(""))
+
+	// Normalize Line endings
+	re := regexp.MustCompile(`\s*[\r\n]+`)
+	b = re.ReplaceAll(b, []byte("\n"))
+
+	// Remove leading line breaks
+	re2 := regexp.MustCompile(`^[\r\n]+`)
+	b = re2.ReplaceAll(b, []byte(""))
 
 	return b, nil
 }

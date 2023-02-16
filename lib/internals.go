@@ -194,15 +194,16 @@ func (m Mail2Most) read(r io.Reader) (*gomail.Reader, error) {
 }
 
 // processReader processes a mail.Reader and returns the body and a list of attachment filename paths or an error
-func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Attachment, error) {
+func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Attachment, bool, error) {
 	if mr == nil {
-		return "", []Attachment{}, fmt.Errorf("nil reader")
+		return "", []Attachment{}, false, fmt.Errorf("nil reader")
 	}
 	var (
 		body        string
 		html        string
 		text        string
 		attachments []Attachment
+		wasHTML		bool
 	)
 	// Process each message's part
 	for {
@@ -245,6 +246,7 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 						m.Error("Read Error", map[string]interface{}{"error": err, "function": "ioutil.ReadAll", "stage": "parse plain text"})
 						continue
 					}
+					//m.Debug("p.Body 01", map[string]interface{}{"p.Body01": b})
 					_, _, err = image.Decode(strings.NewReader(string(b)))
 					// images will be ignored
 					if err != nil {
@@ -253,6 +255,7 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 							m.Error("Parse Text Error", map[string]interface{}{"error": err, "function": "Mail2Most.parseText", "stage": "parse plain text"})
 							continue
 						}
+						//m.Debug("p.Body 02", map[string]interface{}{"p.Body02": b})
 						text += string(b)
 					}
 				//}
@@ -308,9 +311,10 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 			body = text
 		} else if len(html) > 0 {
 			body = html
+			wasHTML = true
 		} else {
 			body = ""
 		}
 	}
-	return body, attachments, nil
+	return body, attachments, wasHTML, nil
 }

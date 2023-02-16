@@ -59,6 +59,7 @@ type mattermost struct {
 	SkipEmptyMessages                          bool
 	StripHTML                                  bool
 	ConvertToMarkdown                          bool
+	DoNotConvert                               bool
 	HideFrom                                   bool
 	HideFromEmail                              bool
 	MailAttachments                            bool

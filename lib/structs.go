@@ -20,6 +20,7 @@ type Mail struct {
 	From, To      []*imap.Address
 	Date          time.Time
 	Attachments   []Attachment
+	WasHTML       bool
 }
 
 // Attachment .

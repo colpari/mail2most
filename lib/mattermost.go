@@ -67,18 +67,26 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 	bb, err := base64.StdEncoding.DecodeString(mail.Body)
 	if err != nil {
 		body = mail.Body
+		//m.Debug("b64-body: ", map[string]interface{}{"body": body})
 	} else {
 		body = string(bb)
+		//m.Debug("nrm-body: ", map[string]interface{}{"body": body})
 	}
 
-	if m.Config.Profiles[profile].Mattermost.ConvertToMarkdown {
+	if m.Config.Profiles[profile].Mattermost.DoNotConvert {
+
+		// we're fine :)
+
+	} else if m.Config.Profiles[profile].Mattermost.ConvertToMarkdown {
 		var b bytes.Buffer
 		err := godown.Convert(&b, strings.NewReader(body), nil)
 		if err != nil {
 			return err
 		}
 		body = b.String()
-	} else if m.Config.Profiles[profile].Mattermost.StripHTML {
+
+	//} else if m.Config.Profiles[profile].Mattermost.StripHTML {
+	} else if mail.WasHTML {
 		body = html2text.HTML2Text(body)
 		mail.Subject = html2text.HTML2Text(mail.Subject)
 		mail.From[0].PersonalName = html2text.HTML2Text(mail.From[0].PersonalName)
@@ -135,7 +143,7 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 		if m.Config.Profiles[profile].Mattermost.BodyOnly {
 			mail.Subject = "\n\n\n\n\n"
 		} else {
-			mail.Subject = fmt.Sprintf("\n>_%s_\n\n", mail.Subject)
+			mail.Subject = fmt.Sprintf("\n_%s_\n", mail.Subject)
 		}
 		shortmsg = msg
 		if m.Config.Profiles[profile].Mattermost.ConvertToMarkdown {
@@ -146,7 +154,7 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 			)
 		} else {
 			msg += fmt.Sprintf(
-				"%s```\n%s```\n",
+				"%s```\n%s\n```\n",
 				mail.Subject,
 				body,
 			)
@@ -163,7 +171,7 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 	}
 
 	fallback := fmt.Sprintf(
-		":email: _%s**_\n>_%s_\n\n",
+		":email: _%s**_\n_%s_\n",
 		m.getFromLine(profile, mail.From[0].PersonalName, mail.From[0].MailboxName+"@"+mail.From[0].HostName),
 		mail.Subject,
 	)
@@ -171,6 +179,8 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 	if len(m.Config.Profiles[profile].Mattermost.Channels) == 0 {
 		m.Debug("no channels configured to send to", nil)
 	}
+
+	//m.Debug("ready to send: ", map[string]interface{}{"msg": msg, "shortmsg": shortmsg, "fallback": fallback})
 
 	for _, channel := range m.Config.Profiles[profile].Mattermost.Channels {
 
