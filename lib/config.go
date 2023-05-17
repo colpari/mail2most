@@ -58,6 +58,7 @@ type mattermost struct {
 	BodyOnly                                   bool
 	SkipEmptyMessages                          bool
 	StripHTML                                  bool
+	PreferPlaintext                            bool
 	ConvertToMarkdown                          bool
 	DoNotConvert                               bool
 	HideFrom                                   bool

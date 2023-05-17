@@ -307,13 +307,15 @@ func (m Mail2Most) processReader(mr *gomail.Reader, profile int) (string, []Atta
 				attachments = append(attachments, attachment)
 			}
 		}
-		if len(text) > 0 {
+		if m.Config.Profiles[profile].Mattermost.PreferPlaintext && (len(text) > 0) {
 			body = text
+			m.Debug("preferring TEXT part over HTML", map[string]interface{}{})
 		} else if len(html) > 0 {
 			body = html
 			wasHTML = true
+			m.Debug("preferring HTML part over TEXT", map[string]interface{}{})
 		} else {
-			body = ""
+			body = "no content found"
 		}
 	}
 	return body, attachments, wasHTML, nil

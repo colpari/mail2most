@@ -76,14 +76,16 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 	if m.Config.Profiles[profile].Mattermost.DoNotConvert {
 
 		// we're fine :)
+		m.Debug("not converting", nil)
 
-	} else if m.Config.Profiles[profile].Mattermost.ConvertToMarkdown {
+	} else if m.Config.Profiles[profile].Mattermost.ConvertToMarkdown && mail.WasHTML {
 		var b bytes.Buffer
 		err := godown.Convert(&b, strings.NewReader(body), nil)
 		if err != nil {
 			return err
 		}
 		body = b.String()
+		m.Debug("ConvertToMarkdown", nil)
 
 	//} else if m.Config.Profiles[profile].Mattermost.StripHTML {
 	} else if mail.WasHTML {
@@ -92,6 +94,7 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 		mail.From[0].PersonalName = html2text.HTML2Text(mail.From[0].PersonalName)
 		mail.From[0].MailboxName = html2text.HTML2Text(mail.From[0].MailboxName)
 		mail.From[0].HostName = html2text.HTML2Text(mail.From[0].HostName)
+		m.Debug("HTML2Text", nil)
 	}
 
 	if len(strings.TrimSpace(body)) < 1 {
