@@ -19,6 +19,8 @@ fi
 
 cat "$M2M_CONF_PREAMBLE" > "$M2M_CONFFILE"
 
+chmod 600 "$M2M_CONFFILE"
+
 for f in "$M2M_CONFDIR"/*.toml
 do
 	if test -f "$f"
