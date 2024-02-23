@@ -60,6 +60,7 @@ type mattermost struct {
 	StripHTML                                  bool
 	PreferPlaintext                            bool
 	ConvertToMarkdown                          bool
+	RemoveSignature                            bool
 	DoNotConvert                               bool
 	HideFrom                                   bool
 	HideFromEmail                              bool

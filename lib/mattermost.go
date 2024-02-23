@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/k3a/html2text"
@@ -95,6 +96,13 @@ func (m Mail2Most) PostMattermost(profile int, mail Mail) error {
 		mail.From[0].MailboxName = html2text.HTML2Text(mail.From[0].MailboxName)
 		mail.From[0].HostName = html2text.HTML2Text(mail.From[0].HostName)
 		m.Debug("HTML2Text", nil)
+	}
+
+	if m.Config.Profiles[profile].Mattermost.RemoveSignature {
+
+		rmSig := regexp.MustCompile(`(?sim)[\r\n][\r\n]--[\r\n].*`)
+		body = rmSig.ReplaceAllString(body, "")
+
 	}
 
 	if len(strings.TrimSpace(body)) < 1 {
