@@ -2,7 +2,9 @@ version: "3"
 
 services:
   mail2most:
-    image: virtomize/mail2most:latest
+    build:
+      context: .
+    image: containers.colpari.dev/mattermost/mail2most:latest
     volumes:
-      - ./conf/mail2most.conf:/mail2most/conf/mail2most.conf
+      - ./conf/mail2most.conf:/mail2most/conf/mail2most.conf:ro
     restart: always

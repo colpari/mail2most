@@ -8,7 +8,7 @@ RUN cd /mail2most/ && mage build
 
 FROM alpine:latest
 
-Maintainer Carsten Seeger <info@casee.de>
+Maintainer Frank Fricke <frank.fricke@colpari.cx>
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 RUN update-ca-certificates

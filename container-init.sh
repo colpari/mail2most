@@ -9,13 +9,8 @@ M2M_CONFFILE="${M2M_CONFFILE:-/mail2most/state/mail2most.conf}"
 M2M_CONFDIR="${M2M_CONFDIR:-/mail2most/conf/}"
 M2M_CONF_PREAMBLE="${M2M_CONF_PREAMBLE:-$M2M_CONFDIR/.preamble}"
 
-echo "[config] preamble='$M2M_CONF_PREAMBLE,' dir='$M2M_CONFDIR', output='$M2M_CONFFILE'"
-
-if test -s "$M2M_CONFFILE"
-then
-	echo "[config] WARNING : '$M2M_CONFFILE' exists and is not empty - overwriting"
-fi
-
+echo "[config] preamble='$M2M_CONF_PREAMBLE,' input='$M2M_CONFDIR', output='$M2M_CONFFILE'"
+echo "[config] writing '$M2M_CONFFILE'"
 
 cat "$M2M_CONF_PREAMBLE" > "$M2M_CONFFILE"
 
@@ -32,9 +27,12 @@ done
 
 if ! test -s "$M2M_CONFFILE"
 then
-	echo "[config] no or only empty configuration(s) found" 1>&2
+	echo -e "[config] no or only empty configuration(s) found?\n[config] ABORTING" 1>&2
 	exit 1
 fi
+
+# just 2b sure:
+chmod 600 "$M2M_CONFFILE"
 
 cd /mail2most
 
